@@ -17,13 +17,17 @@ export class UsersController {
       });
   }
   @Post('')
-  private createUser(req: Request, res: Response) {
+  private async createUser(req: Request, res: Response) {
     const userData = new UserModel(req.body);
     Logger.Info(JSON.stringify(req.body));
-    userData.save().then(data => {
-      res.status(OK).json({
-        user: data
-      })
-    })
+    try {
+      await userData.save().then(data => {
+        res.status(OK).json({
+          user: data
+        })
+      });
+    } catch(err) {
+      Logger.Err(JSON.stringify(err));
+    }
   }
 }
