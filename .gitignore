@@ -3,6 +3,10 @@ node_modules/
 /node_modules
 /**/node_modules
 
+# #build folder
+build/
+/build
+
 
 
 # Windows image file caches
