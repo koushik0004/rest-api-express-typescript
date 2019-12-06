@@ -1,0 +1,38 @@
+version: "3.1"
+services:
+  mongo:
+    container_name: mongo
+    image: mvertes/alpine-mongo:4.0.5-0
+    restart: always
+    volumes:
+      - ./data:/www/app/data
+    ports:
+      - 27017:27017
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    tty: true
+    labels:
+      NAME: "rabbitmq"
+  chatapp:
+    build:
+      context: .
+    ports:
+      - "4001:3000"
+      - "4002:80"
+    container_name: chatapp
+    # command: nodemon -L ./bin/www
+    volumes:
+      - .:/www/app
+    environment:
+      - AMQP_RECEIVE_URL=amqp://guest:guest@rabbitmq:5672
+    links:
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+      - mongo
+    restart: on-failure
+    # tty: true
